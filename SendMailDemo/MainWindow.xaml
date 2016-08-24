@@ -1,0 +1,79 @@
+﻿<Window x:Class="SendMailDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" MinHeight="450" MinWidth="650"
+        Height="600" Width="850"
+        FontSize="13" WindowStartupLocation="CenterScreen">
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <GroupBox Header="导入文件信息">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="120" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="选择导入文件："/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                    <TextBox x:Name="XTxtFileName" Width="350" Text=""/>
+                    <Button x:Name="XBtnOpen" Margin="10,0,0,0" Content="浏览..." />
+                </StackPanel>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="选择导入页签："/>
+                <ComboBox Grid.Row="1" Grid.Column="1" IsEditable="False" SelectedItem="{Binding SelectedSheet, Mode=TwoWay}" ItemsSource="{Binding SheetList}" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="0,10,0,0" Grid.Row="1" Header="发送邮件设置">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="发件人："/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Sender, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="邮箱密码："/>
+                <PasswordBox x:Name="XPwdBox" Grid.Row="0" Grid.Column="3" Password=""/>
+                
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="邮件标题："/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding MailTitle, Mode=TwoWay}"/>
+                <TextBlock Grid.Row="1" Grid.Column="2" Text="SMTP主机名："/>
+                <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding SmtpHost, Mode=TwoWay}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="邮件正文：" VerticalAlignment="Top"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Height="Auto" VerticalAlignment="Stretch"
+                         TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Text="{Binding MailBody}"/>
+                <StackPanel Grid.Row="2" Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button x:Name="XBtnSend" Margin="10,0,0,0" Content="发送" />
+                    <Button x:Name="XBtnEmployee" Margin="10,0,0,0" Content="添加人员" Width="80" />
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+        <GroupBox Margin="0,10,0,0" Grid.Row="2" Header="输出日志信息">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="26" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="XTxtLog" TextWrapping="Wrap" Height="Auto" VerticalAlignment="Stretch"
+                         AcceptsReturn="True" AcceptsTab="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                <TextBlock x:Name="XTbkInfo" Grid.Row="1" Text="" HorizontalAlignment="Left"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
