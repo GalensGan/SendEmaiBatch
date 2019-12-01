@@ -1,0 +1,14 @@
+﻿<Window x:Class="SendMailBatch.LoginWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SendMailBatch"
+        mc:Ignorable="d"
+        Title="安全认证" Height="139.025" Width="443.293" WindowStartupLocation="CenterScreen">
+    <Grid Height="86" Margin="0,0,0,10">
+        <PasswordBox x:Name="passwordBox" Margin="135,38,27,26" VerticalAlignment="Center" ToolTip="校验码是为了加密和解密所保存的密码\n如果校验码忘记了，请重新录入发件邮箱" Height="22"/>
+        <Label x:Name="label" Content="请输入校验码" HorizontalAlignment="Left" Margin="37,11,0,0" VerticalAlignment="Center"/>
+
+    </Grid>
+</Window>

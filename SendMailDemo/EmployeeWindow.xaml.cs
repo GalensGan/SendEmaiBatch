@@ -1,27 +1,18 @@
-﻿using System;
+﻿using log4net;
+using Microsoft.Win32;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml;
-using log4net;
-using Microsoft.Win32;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 
-namespace SendMailDemo
+namespace SendMailBatch
 {
     /// <summary>
     /// EmployeeWindow.xaml 的交互逻辑
@@ -46,7 +37,7 @@ namespace SendMailDemo
         /// </summary>
         public string SelectedSheet
         {
-            get { return _selectedSheet; }
+            get => _selectedSheet;
             set
             {
                 _selectedSheet = value;
@@ -58,7 +49,7 @@ namespace SendMailDemo
         /// </summary>
         public ObservableCollection<string> SheetList
         {
-            get { return _sheetList; }
+            get => _sheetList;
             set
             {
                 _sheetList = value;
@@ -70,7 +61,7 @@ namespace SendMailDemo
         /// </summary>
         public Employee AddEmp
         {
-            get { return _addEmp; }
+            get => _addEmp;
             set
             {
                 _addEmp = value;
@@ -82,7 +73,7 @@ namespace SendMailDemo
         /// </summary>
         public ObservableCollection<Employee> EmployeeList
         {
-            get { return _employeeList; }
+            get => _employeeList;
             set
             {
                 _employeeList = value;
@@ -114,6 +105,7 @@ namespace SendMailDemo
             XBtnOpen.Click += OnBtnOpen_Click;
             XBtnImport.Click += OnBtnImport_Click;
             XBtnDelete.Click += OnBtnDelete_Click;
+            XBtnClearState.Click += OnBtnClearState_Click;
             XBtnSave.Click += OnBtnSave_Click;
             XChkBoxTitle.Click += OnChkBoxTitle_Click;
 
@@ -126,41 +118,7 @@ namespace SendMailDemo
         private void InitEmployees()
         {
             EmployeeList.Clear();
-            try
-            {
-                if (!File.Exists("EmployeeInfo.xml"))
-                    return;
-
-                XmlDocument xml = new XmlDocument();
-                xml.Load("EmployeeInfo.xml");
-
-                XmlElement root = xml.DocumentElement;
-                if (root == null)
-                    return;
-
-                foreach (XmlNode node in root.ChildNodes)
-                {
-                    var emp = new Employee();
-                    foreach (XmlNode node2 in node.ChildNodes)
-                    {
-                        switch (node2.Name)
-                        {
-                            case "Name":
-                                emp.Name = node2.InnerText;
-                                break;
-                            case "Email":
-                                emp.Email = node2.InnerText;
-                                break;
-                        }
-                    }
-                    EmployeeList.Add(emp);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                MessageBox.Show(ex.Message);
-            }
+            EmailConfigManager.Employees.ForEach(item => EmployeeList.Add(item));
         }
         #endregion
 
@@ -282,7 +240,7 @@ namespace SendMailDemo
 
             try
             {
-                using (Stream fs = new FileStream(_fileName, FileMode.Open, FileAccess.Read))
+                using (Stream fs = new FileStream(_fileName, FileMode.Open, FileAccess.Read,FileShare.Read))
                 {
                     IWorkbook workbook = WorkbookFactory.Create(fs);
                     ISheet sheet = workbook.GetSheet(SelectedSheet);
@@ -302,7 +260,7 @@ namespace SendMailDemo
                         for (int j = 0; j < 2; j++)
                         {
                             ICell cell = dataRow.Cells[j];
-                            var cellVal = ReadCellValue(j, cell);
+                            string cellVal = ReadCellValue(j, cell);
                             switch (j)
                             {
                                 case 0:  // 姓名
@@ -422,40 +380,44 @@ namespace SendMailDemo
         }
 
         /// <summary>
+        /// 清空发送状态
+        /// </summary>
+        private void OnBtnClearState_Click(object sender, RoutedEventArgs e)
+        {
+            if (EmployeeList.Count == 0)
+                return;
+
+            bool flag = EmployeeList.Any(emp => emp.IsChecked);
+            if (!flag)
+            {
+                MessageBox.Show("请选择需要清除状态的人员！");
+                return;
+            }
+            if (MessageBoxResult.OK == MessageBox.Show("您确定要清除选择的人员的发送状态？清空将会重复发送邮件", "清除发送状态", MessageBoxButton.OKCancel))
+            {
+                for (int i = 0; i < EmployeeList.Count; i++)
+                {
+                    if (EmployeeList[i].IsChecked)
+                    {
+                        EmployeeList[i].SendState = string.Empty;
+                        EmployeeList[i].SendDate = string.Empty;
+                    }
+                }
+                _isModify = true;
+            }
+        }
+
+        /// <summary>
         /// 保存人员信息
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnBtnSave_Click(object sender, RoutedEventArgs e)
         {
-            try
+            if (EmailConfigManager.SaveEmployees(EmployeeList))
             {
-                XmlDocument xml = new XmlDocument();
-                xml.LoadXml("<?xml version=\"1.0\" encoding=\"utf-8\" ?> <Employees></Employees>");
-
-                XmlElement root = xml.DocumentElement;
-                foreach (Employee emp in EmployeeList)
-                {
-                    XmlElement ele = xml.CreateElement("Employee");
-                    XmlElement ele2 = xml.CreateElement("Name");
-                    ele2.InnerText = emp.Name;
-                    ele.AppendChild(ele2);
-
-                    ele2 = xml.CreateElement("Email");
-                    ele2.InnerText = emp.Email;
-                    ele.AppendChild(ele2);
-
-                    if (root != null) root.AppendChild(ele);
-                }
-                xml.Save("EmployeeInfo.xml");
                 MessageBox.Show("保存成功！");
-
                 _isModify = false;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                MessageBox.Show(ex.Message);
             }
         }
 
@@ -466,11 +428,10 @@ namespace SendMailDemo
         /// <param name="e"></param>
         private void OnChkBoxTitle_Click(object sender, RoutedEventArgs e)
         {
-            var chkBox = sender as CheckBox;
-            if (chkBox == null || EmployeeList.Count == 0)
+            if (!(sender is CheckBox chkBox) || EmployeeList.Count == 0)
                 return;
 
-            foreach (var emp in EmployeeList)
+            foreach (Employee emp in EmployeeList)
             {
                 emp.IsChecked = chkBox.IsChecked.GetValueOrDefault();
             }

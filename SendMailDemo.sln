@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendMailDemo", "SendMailDemo\SendMailDemo.csproj", "{094FD5CC-D69D-4B0F-9EBF-F12F71F94E20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendMailBatch", "SendMailDemo\SendMailBatch.csproj", "{094FD5CC-D69D-4B0F-9EBF-F12F71F94E20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CF15B56C-C36B-4C34-BD18-BD7377EB505E}
 	EndGlobalSection
 EndGlobal

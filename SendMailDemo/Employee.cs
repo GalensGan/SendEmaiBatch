@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SendMailDemo
+namespace SendMailBatch
 {
     public class Employee : INotifyPropertyChanged
     {
@@ -37,6 +37,29 @@ namespace SendMailDemo
                 OnPropertyChanged("Email");
             }
         }
+
+        private string _sendState = string.Empty;
+        public string SendState
+        {
+            get => _sendState;
+            set
+            {
+                _sendState = value;
+                OnPropertyChanged("SendState");
+            }
+        }
+
+        private string _sendDate = string.Empty;
+        public string SendDate
+        {
+            get => _sendDate;
+            set
+            {
+                _sendDate = value;
+                OnPropertyChanged("SendDate");
+            }
+        }
+
         /// <summary>
         /// 是否选中
         /// </summary>
@@ -59,17 +82,8 @@ namespace SendMailDemo
 
         public override bool Equals(object obj)
         {
-            if (obj == null)
-                return false;
-
-            if (obj.GetType() != GetType())
-                return false;
-
-            return Equals(obj as Employee);
-        }
-        private bool Equals(Employee emp)
-        {
-            return (Name == emp.Name || Email == emp.Email);
+            if (obj != null && obj is Employee e && e.Name == this.Name && e.Email == this.Email) return true;
+            else return false;
         }
 
         public override int GetHashCode()
@@ -81,10 +95,7 @@ namespace SendMailDemo
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string pPropertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(pPropertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(pPropertyName));
         }
         #endregion
     }

@@ -1,0 +1,78 @@
+﻿<Window x:Class="SendMailBatch.EmailSettingsWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="发件箱设置" Height="356.098" Width="642.378"
+        FontSize="13" WindowStartupLocation="CenterOwner" MinWidth="700" MinHeight="400">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="18.793"/>
+            <RowDefinition Height="98.207"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="XDataGrid" Grid.Row="3" Margin="0,15,0,8" ItemsSource="{Binding EmailAccountList}" 
+                  AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" SelectionMode="Single" RowHeight="26"
+                  HorizontalContentAlignment="Center" VerticalContentAlignment="Center" CanUserResizeRows="False" ColumnWidth="*">
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="30">
+                    <DataGridTemplateColumn.Header>
+                        <CheckBox x:Name="XChkBoxTitle" />
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox x:Name="XChkBoxEmployee" IsChecked="{Binding IsChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DataContext="{Binding .}"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="邮箱地址" Width="100" Binding="{Binding AccountName}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="2,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="密码" Width="200" Binding="{Binding Password}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="2,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="SMTP主机" Width="200" Binding="{Binding SMTPHostName}" IsReadOnly="True">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="2,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid Grid.Row="4">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button x:Name="XBtnDelete" Margin="10,0,0,0" Content="删除" />
+                <Button x:Name="XBtnSave" Margin="10,0,0,0" Content="保存" />
+            </StackPanel>
+        </Grid>
+        <TextBlock Text="用户名：" Height="16" Margin="34,11,586,90" Grid.Row="1" HorizontalAlignment="Stretch" Grid.RowSpan="2"/>
+        <TextBox Grid.Row="1" Text="{Binding AddEmailAccount.AccountName, Mode=TwoWay}" Margin="86,9,141,86" Height="22" Grid.RowSpan="2"/>
+        <TextBlock Grid.Column="0" Text="密码：" Height="18" Margin="47,18,586,62" Grid.Row="2" HorizontalAlignment="Stretch"/>
+        <PasswordBox x:Name="EmailPassWordBox" Margin="86,18.207,141,58" Height="22" Grid.Row="2" />
+        <Button x:Name="XBtnAdd" Margin="0,52,71,0" Content="添加" RenderTransformOrigin="0.475,2.377" HorizontalAlignment="Right" Width="60" VerticalAlignment="Top" Height="22" Grid.Row="2" />
+        <TextBlock Text="SMTP主机：" Margin="11,52,586,30" Height="16" Grid.Row="2" HorizontalAlignment="Stretch"/>
+        <TextBox Text="{Binding AddEmailAccount.SMTPHostName, Mode=TwoWay}" Margin="86,52,141,0" Height="22" Grid.Row="2" VerticalAlignment="Top"/>
+    </Grid>
+</Window>
